@@ -1,0 +1,29 @@
+ROOM 1
+   WALL
+     1 9  18 9
+     18 9  18 1
+     18 1  1 1
+     1 1  1 9
+   DOOR 18 6 18 4 STATUS OPEN LEADS TO 2
+   MONSTER monster_demon_imp AT 12 7
+   LIGHT AT 14 8
+   LIGHT AT 9 2
+   SPAWN PLAYER AT 3 6
+   INSIDE AT 4 7
+END
+
+ROOM 2
+   WALL
+     18 9  34 9
+     34 9  34 1
+     34 1  18 1
+     18 1  18 9
+   DOOR 18 4 18 6 STATUS OPEN LEADS TO 1
+   MONSTER monster_demon_hellknight AT 30 3
+   AMMO ammo_grenade AMOUNT 16 AT 26 3
+   LIGHT AT 29 8
+   LIGHT AT 23 2
+   INSIDE AT 21 7
+END
+
+END.
