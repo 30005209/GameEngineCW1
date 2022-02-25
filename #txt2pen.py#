@@ -492,7 +492,7 @@ def scanRoom (topleft, p, mapGrid, walls, doors):
 def checkLight (position, lightList, lightCount):
     if lightCount == lightFrequency:
         li = light ()
-        li.settype ("MID")
+        li.settype (’MID’)
         lightList += [position + [li]]
         lightCount = 0
     else:
