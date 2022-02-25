@@ -24,7 +24,7 @@
 
 import getopt, sys, string
 from chvec import *
-from chcuboid import *
+from student.chcuboid import *
 import math, random
 
 
@@ -2562,12 +2562,22 @@ def doOpen (r, e):
                 print("vertical ceiling block at", pos, end, size)
             newcuboid (pos, size, 'wall', r)   # ceiling
             if enableVisportals:
+                print("e =")
+                print(e)
                 # visportal doorway
                 #
                 # (your code goes here)
                 #
                 # fill in the doorway with visportal block
                 # vertical visportal code
+                pos = [e[0][0], l, rooms[r].floorLevel]
+                end = [e[1][0]+1, l+1, minCeilingHeight]
+                size = subVec (end, pos)
+                print ("pos =", pos)
+                print ("h = ", h)
+                print ("end =", end)
+                newcuboid (pos, size, 'portal',r)
+                #newcuboid (pos, size, e[-2],r)
                 pass
     else:
         #
@@ -2586,11 +2596,21 @@ def doOpen (r, e):
                 print("horiz ceiling block at", pos, end, size)
             newcuboid (pos, size, 'wall', r)   # ceiling
             if enableVisportals:
+                print ("e =")
+                print (e)
                 # visportal doorway
                 #
                 # (your code goes here)
                 #
                 # horizontal visportal doorway
+                pos = [l, e[0][1], rooms[r].floorLevel]
+                end = [l+1, e[1][1]+1, minCeilingHeight]
+                size = subVec (end, pos)
+                print ("pos =", pos)
+                print ("h =", h)
+                print ("end =", end)
+                newcuboid (pos, size, e[-2], r)
+                #newcuboid (pos, size, 'portals', r)
                 pass
 
 

@@ -33,7 +33,7 @@ floor = []
 rooms = {}
 maxx, maxy = 0, 0
 doorValue, wallValue, emptyValue = 0, -1, -2
-versionNumber = 0.2
+versionNumber = 0.1
 lightFrequency = 5
 defaultColour = None
 openDoor, closedDoor, secretDoor = range (3)
@@ -140,14 +140,14 @@ def debugf (format, *args):
 
 
 def usage (code):
-    print("Usage: txt2pen [-dhlvV] [-f frequency] [-o outputfile] inputfile")
-    print("  -d debugging")
-    print("  -h help")
-    print("  -l automatic lighting")
-    print("  -f frequency    (every frequency squares place a light)")
-    print("  -V verbose")
-    print("  -v version")
-    print("  -o outputfile name")
+    print ("Usage: txt2pen [-dhlvV] [-f frequency] [-o outputfile] inputfile")
+    print ("  -d debugging")
+    print ("  -h help")
+    print ("  -l automatic lighting")
+    print ("  -f frequency    (every frequency squares place a light)")
+    print ("  -V verbose")
+    print ("  -v version")
+    print ("  -o outputfile name")
     sys.exit (code)
 
 
@@ -513,16 +513,16 @@ def checkLight (position, lightList, lightCount):
 #                    Post-condition: a list of lights is returned.
 #
 
-def introduceLights (p, mapGrid, walls, doors):
+def introduceLights (position, mapGrid, walls, doors):
     global debuging
 
-    s = p
-    a = addVec (p, [-1, -1])
+    s = position
+    a = addVec (position, [-1, -1])
     d = 1  # 0 up, 1 right, 2 down, 3 left
     leftVec = [[-1, 0], [0, -1], [1, 0], [0, 1]]
     forwardVec = [[0, -1], [1, 0], [0, 1], [-1, 0]]
     if debugging:
-        print("wall corner", p)
+        print("wall corner", position)
 
     lightCount = 0
     lights = []
@@ -530,7 +530,69 @@ def introduceLights (p, mapGrid, walls, doors):
     doorEndPoint = None
     needToAvoidDoor = False
     # your code goes here, complete this function.
-    return []
+    seenDoor = False
+    while True:
+        if not seenDoor:
+            lights, lightCount = checkLight (position, lights, lightCount)
+        if debugging:
+            print("point currently at", position, d)
+        if (doorStartPoint == None) and lookingLeft (position, leftVec[d], mapGrid, '. '):
+            if debugging:
+                print("seen first point", position)
+            # first point on the wall is a door
+            doorEndPoint = doorStartPoint
+            seenDoor = True
+        if lookingLeft (addVec (position, forwardVec[d]), leftVec[d], mapGrid, '. '):
+            if debugging:
+                print("seen a door point", position, end=' ')          
+            seenDoor = True
+            doorEndPoint = addVec (addVec (position, forwardVec[d]), leftVec[d])
+        else:
+            # end of door?
+            if doorEndPoint != None:
+                seenDoor = False
+        if lookingLeft (addVec (position, forwardVec[d]), leftVec[d], mapGrid, 'x '):
+            # carry on
+            position = addVec (position, forwardVec[d])
+            seenDoor = False
+        elif lookingLeft (addVec (position, forwardVec[d]), leftVec[d], mapGrid, 'x.'):
+            if debugging:
+                print("wall corner (x.)", position)
+            # end of door?
+            doorStartPoint = None
+            doorEndPoint = None
+            seenDoor = True
+            # turn right
+            d = (d + 1) % 4
+            if s == position:
+                # back to the start
+                return lights
+        elif lookingLeft (addVec (position, forwardVec[d]), leftVec[d], mapGrid, 'xx'):
+            if debugging:
+                print("wall corner (xx)", position)
+            # end of door?
+            doorStartPoint = None
+            doorEndPoint = None
+            seenDoor = False
+            # turn right
+            d = (d + 1) % 4
+            if s == position:
+                # back to the start
+                return lights
+        elif lookingLeft (addVec (position, forwardVec[d]), leftVec[d], mapGrid, '  '):
+            if debugging:
+                print("wall corner (  )", position, end=' ')
+            # turn left
+            position = addVec (position, forwardVec[d])
+            d = (d + 3) % 4
+            seenDoor = True
+            if s == position:
+                # back to the start
+                return lights
+        else:
+            error ("introduceLights at %s has gone wrong, maybe the room is too small\n", position)
+
+    return lights
 
 
 def printCoord (c, o):
